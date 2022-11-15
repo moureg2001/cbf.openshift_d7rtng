@@ -1594,7 +1594,6 @@ prometheusOperator:
   enabled: true
 
   ## Prometheus-Operator v0.39.0 and later support TLS natively.
-  ##
   tls:
     enabled: true
     # Value must match version names from https://golang.org/pkg/crypto/tls/#pkg-constants
@@ -1607,7 +1606,7 @@ prometheusOperator:
   admissionWebhooks:
     failurePolicy: Fail
     ## The default timeoutSeconds is 10 and the maximum value is 30.
-    timeoutSeconds: 10
+    timeoutSeconds: 60
     enabled: true
     ## A PEM encoded CA bundle which will be used to validate the webhook's server certificate.
     ## If unspecified, system trust roots on the apiserver are used.
@@ -1616,9 +1615,9 @@ prometheusOperator:
     ## On chart upgrades (or if the secret exists) the cert will not be re-generated. You can use this to provide your own
     ## certs ahead of time if you wish.
     ##
-    annotations: {}
-    #   argocd.argoproj.io/hook: PreSync
-    #   argocd.argoproj.io/hook-delete-policy: HookSucceeded
+    annotations: 
+       argocd.argoproj.io/hook: PreSync
+       argocd.argoproj.io/hook-delete-policy: HookSucceeded
     patch:
       enabled: true
       image:
@@ -1630,9 +1629,9 @@ prometheusOperator:
       ## Provide a priority class name to the webhook patching job
       ##
       priorityClassName: ""
-      annotations: {}
-      #   argocd.argoproj.io/hook: PreSync
-      #   argocd.argoproj.io/hook-delete-policy: HookSucceeded
+      annotations: 
+         argocd.argoproj.io/hook: PreSync
+         argocd.argoproj.io/hook-delete-policy: HookSucceeded
       podAnnotations: {}
       nodeSelector: {}
       affinity: {}
