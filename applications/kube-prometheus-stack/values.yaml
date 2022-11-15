@@ -3,33 +3,26 @@
 # Declare variables to be passed into your templates.
 
 ## Provide a name in place of kube-prometheus-stack for `app:` labels
-##
 nameOverride: ""
 
 ## Override the deployment namespace
-##
 namespaceOverride: ""
 
 ## Provide a k8s version to auto dashboard import script example: kubeTargetVersionOverride: 1.16.6
-##
 kubeTargetVersionOverride: ""
 
 ## Allow kubeVersion to be overridden while creating the ingress
-##
 kubeVersionOverride: ""
 
 ## Provide a name to substitute for the full names of resources
-##
 fullnameOverride: ""
 
 ## Labels to apply to all resources
-##
 commonLabels: {}
 # scmhash: abc123
 # myLabel: aakkmd
 
 ## Create default rules for monitoring the cluster
-##
 defaultRules:
   create: true
   rules:
@@ -106,7 +99,7 @@ additionalPrometheusRulesMap: {}
 ##
 global:
   rbac:
-    create: true
+    create: false
 
     ## Create ClusterRoles that extend the existing view, edit and admin ClusterRoles to interact with prometheus-operator CRDs
     ## Ref: https://kubernetes.io/docs/reference/access-authn-authz/rbac/#aggregated-clusterroles
