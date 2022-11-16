@@ -37,6 +37,7 @@ esJvmOptions: {}
 
 # Extra environment variables to append to this nodeGroup
 # This will be appended to the current 'env:' key. You can use any of the kubernetes env
+# syntax here
 extraEnvs: []
 #  - name: MY_ENVIRONMENT_VAR
 #    value: the_value_goes_here
@@ -50,6 +51,7 @@ envFrom: []
 
 # A list of secrets and their paths to mount inside the pod
 # This is useful for mounting certificates for security and for mounting
+# the X-Pack license
 secretMounts: []
 #  - name: elastic-certificates
 #    secretName: elastic-certificates
@@ -70,6 +72,7 @@ podAnnotations:
   {}
   # iam.amazonaws.com/role: es-cluster
 
+# additionals labels
 labels: {}
 
 esJavaOpts: "" # example: "-Xmx1g -Xms1g"
@@ -77,7 +80,7 @@ esJavaOpts: "" # example: "-Xmx1g -Xms1g"
 resources:
   limits:
     cpu: "1000m"
-    memory: "512Mi"
+    memory: "2Gi"
 
 initResources:
   {}
@@ -152,6 +155,7 @@ extraInitContainers:
   #   command: ['do', 'something']
 
 # This is the PriorityClass settings as defined in
+# https://kubernetes.io/docs/concepts/configuration/pod-priority-preemption/#priorityclass
 priorityClassName: ""
 
 # By default this will make sure two pods don't end up on the same node
@@ -163,6 +167,7 @@ antiAffinityTopologyKey: "kubernetes.io/hostname"
 antiAffinity: "hard"
 
 # This is the node affinity settings as defined in
+# https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#node-affinity-beta-feature
 nodeAffinity: {}
 
 # The default is to deploy all pods serially. By setting this to parallel all pods are started at
@@ -184,6 +189,7 @@ service:
   labelsHeadless: {}
   type: ClusterIP
   # Consider that all endpoints are considered "ready" even if the Pods themselves are not
+  # https://kubernetes.io/docs/reference/kubernetes-api/service-resources/service-v1/#ServiceSpec
   publishNotReadyAddresses: false
   nodePort: ""
   annotations: {}
@@ -201,8 +207,8 @@ updateStrategy: RollingUpdate
 maxUnavailable: 1
 
 podSecurityContext:
-  fsGroup: null
-  runAsUser: null
+  fsGroup: 1000
+  runAsUser: 1000
 
 securityContext:
   capabilities:
@@ -210,7 +216,7 @@ securityContext:
       - ALL
   # readOnlyRootFilesystem: true
   runAsNonRoot: true
-  runAsUser: null
+  runAsUser: 1000
 
 # How long to wait for elasticsearch to stop gracefully
 terminationGracePeriod: 120
@@ -224,9 +230,12 @@ readinessProbe:
   successThreshold: 3
   timeoutSeconds: 5
 
+# https://www.elastic.co/guide/en/elasticsearch/reference/7.17/cluster-health.html#request-params wait_for_status
 clusterHealthCheckParams: "wait_for_status=green&timeout=1s"
 
 ## Use an alternate scheduler.
+## ref: https://kubernetes.io/docs/tasks/administer-cluster/configure-multiple-schedulers/
+##
 schedulerName: ""
 
 imagePullSecrets: []
@@ -277,7 +286,7 @@ lifecycle:
   #         curl -XPUT "$ES_URL/_template/$TEMPLATE_NAME" -H 'Content-Type: application/json' -d'{"index_patterns":['\""$INDEX_PATTERN"\"'],"settings":{"number_of_shards":'$SHARD_COUNT',"number_of_replicas":'$REPLICA_COUNT'}}'
 
 sysctlInitContainer:
-  enabled: false
+  enabled: true
 
 keystore: []
 
@@ -294,6 +303,9 @@ networkPolicy:
     enabled: false
     ## if explicitNamespacesSelector is not set or set to {}, only client Pods being in the networkPolicy's namespace
     ## and matching all criteria can reach the DB.
+    ## But sometimes, we want the Pods to be accessible to clients from other namespaces, in this case, we can use this
+    ## parameter to select these namespaces
+    ##
     # explicitNamespacesSelector:
     #   # Accept from namespaces with all those different rules (only from whitelisted Pods)
     #   matchLabels:
