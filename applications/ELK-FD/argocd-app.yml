@@ -1,0 +1,11 @@
+project: default
+source:
+  repoURL: 'https://github.com/arkapravasinha/ElasticFluentKibanaSetup'
+  path: manifests
+  targetRevision: HEAD
+destination:
+  server: 'https://kubernetes.default.svc'
+  namespace: kube-logging
+syncPolicy:
+  syncOptions:
+    - CreateNamespace=true

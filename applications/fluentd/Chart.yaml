@@ -1,0 +1,10 @@
+apiVersion: v2
+appVersion: 1.14.0
+
+description: Fluentd is an open source data collector for unified logging layer
+
+name: fluentd
+sources:
+- https://github.com/bitnami/bitnami-docker-fluentd
+- https://www.fluentd.org/
+version: 4.2.0
