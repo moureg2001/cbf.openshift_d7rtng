@@ -1,3 +1,6 @@
+# creating stateful set as Elasticsearch needs stable storage to store data as the data lose  during Pod restarts.
+# are also using some initialization containers for permissions and ulimit. 
+# It will also create local-storage class for creating Persistent Volume Claims for our stateful Pods.
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
@@ -75,3 +78,4 @@ spec:
       resources:
         requests:
           storage: 10Gi
+

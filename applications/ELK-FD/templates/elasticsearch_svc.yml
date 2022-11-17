@@ -1,3 +1,7 @@
+# create a Headless Service for Elastic Serach
+# This will create a headless service for our Elasticsearch stateful set of 3 replicas. 
+# A headless service will basically define a DNS, it will not create a cluster Ip address and will not load balance.
+# Kube-proxy does not handle this services.
 apiVersion: v1
 kind: Service
 metadata:
@@ -14,3 +18,4 @@ spec:
       name: rest
     - port: 9300
       name: inter-node
+

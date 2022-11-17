@@ -1,3 +1,7 @@
+# create deployment for Fluentd
+# create a Service Account and Cluster Role for Fluentd and map both using ClusterRoleBinding 
+# so that Fluentd can access container logs and deploy fluentd as a daemon set so that Daemon controller will deploy fluentd in each nodes. 
+# it will also provide configuration for elastic search as environment variables and log locations as volume mount.
 apiVersion: v1
 kind: ServiceAccount
 metadata:
