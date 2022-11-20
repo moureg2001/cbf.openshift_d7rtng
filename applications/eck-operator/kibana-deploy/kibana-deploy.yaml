@@ -2,8 +2,19 @@ apiVersion: kibana.k8s.elastic.co/v1
 kind: Kibana
 metadata:
   name: kibana-master
+  namespace: elastic-monitoring
 spec:
   version: 8.5.1
   count: 1
   elasticsearchRef:
-    name: quickstart
+    name: elasticsearch
+  http:
+    service:
+      metadata:
+        annotations:
+          # request ECK to create the kibana service with the following annotation
+          service.beta.openshift.io/serving-cert-secret-name: "kibana-openshift-tls"
+    tls:
+      certificate:
+        # use the previously created Secret to on the Kibana endpoint
+        secretName: kibana-openshift-tls

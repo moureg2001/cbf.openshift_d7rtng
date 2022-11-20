@@ -1,17 +1,43 @@
 apiVersion: elasticsearch.k8s.elastic.co/v1
 kind: Elasticsearch
 metadata:
-  name: quickstart
+  name: elasticsearch
 spec:
   version: 8.5.1
   nodeSets:
-  - name: master
+  - name: master-nodes
     count: 1
+    podTemplate:
+      spec:
+        affinity:
+          nodeAffinity:
+            requiredDuringSchedulingIgnoredDuringExecution:
+              nodeSelectorTerms:
+              - matchExpressions:
+                - key: environment
+                  operator: In
+                  values: ["dev", "e2e", "production"]
+        containers:
+        - name:  elasticsearch
+          env:
+            - name:  ES_JAVA_OPTS
+              value:  "-Xms2g -Xmx4g"
     config:
       node.roles: [master]
+      node.data: false
       node.store.allow_mmap: false
-  - name: master
-    count: 1
+  - name: data-nodes
+    count: 3
     config:
       node.store.allow_mmap: false
+      node.master: false
       node.roles: [data, ingest, ml]
+    volumeClaimTemplates:
+      - metadata:
+          name: elasticsearch-data
+        spec:
+          resource:
+            requests:
+              storage: 35Gi
+          storageClassName: aws-ebs
+            
